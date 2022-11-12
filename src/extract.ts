@@ -696,7 +696,7 @@ function extractLuauBenchmarkResult(output: string): BenchmarkResult[] {
 
 export async function extractResult(config: Config): Promise<Benchmark> {
     const output = await fs.readFile(config.outputFilePath, 'utf8');
-    const { tool, githubToken } = config;
+    const { tool } = config;
     let benches: BenchmarkResult[];
 
     switch (tool) {
