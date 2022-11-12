@@ -23,6 +23,7 @@ exports.extractResult = void 0;
 /* eslint-disable @typescript-eslint/naming-convention */
 const fs_1 = require("fs");
 const github = __importStar(require("@actions/github"));
+const git = __importStar(require("./git"));
 function getHumanReadableUnitValue(seconds) {
     if (seconds < 1.0e-6) {
         return [seconds * 1e9, 'nsec'];
@@ -82,7 +83,27 @@ async function getCommitFromGitHubAPIRequest(githubToken) {
         url: data.html_url,
     };
 }
-async function getCommit(githubToken) {
+async function getCommit(config) {
+    const { githubToken, readCommitIdFromGit } = config;
+    if (readCommitIdFromGit) {
+        const id = (await git.readCommitId()).trim();
+        const timestamp = await git.readCommitTimestamp();
+        const repo = github.context.repo;
+        const email = await git.readCommitEmail();
+        const user = {
+            name: email,
+            username: email,
+        };
+        const message = await git.readCommitMessage();
+        return {
+            id,
+            url: `https://github.com/${repo.owner}/${repo.repo}/commits/${id}`,
+            timestamp,
+            message,
+            author: user,
+            committer: user,
+        };
+    }
     if (github.context.payload.head_commit) {
         return github.context.payload.head_commit;
     }
@@ -394,7 +415,7 @@ function extractLuauBenchmarkResult(output) {
 }
 async function extractResult(config) {
     const output = await fs_1.promises.readFile(config.outputFilePath, 'utf8');
-    const { tool, githubToken } = config;
+    const { tool } = config;
     let benches;
     switch (tool) {
         case 'cargo':
@@ -440,7 +461,7 @@ async function extractResult(config) {
     if (benches.length === 0) {
         throw new Error(`No benchmark result was found in ${config.outputFilePath}. Benchmark output was '${output}'`);
     }
-    const commit = await getCommit(githubToken);
+    const commit = await getCommit(config);
     return {
         commit,
         date: Date.now(),

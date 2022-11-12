@@ -210,6 +210,7 @@ async function configFromJobInput() {
     const alertThreshold = getPercentageInput('alert-threshold');
     const failOnAlert = getBoolInput('fail-on-alert');
     const alertCommentCcUsers = getCommaSeparatedInput('alert-comment-cc-users');
+    const readCommitIdFromGit = getBoolInput('read-commit-id-from-git');
     let externalDataJsonPath = core.getInput('external-data-json-path');
     const maxItemsInChart = getUintInput('max-items-in-chart');
     let failThreshold = getPercentageInput('fail-threshold');
@@ -256,6 +257,7 @@ async function configFromJobInput() {
         externalDataJsonPath,
         maxItemsInChart,
         failThreshold,
+        readCommitIdFromGit,
     };
 }
 exports.configFromJobInput = configFromJobInput;

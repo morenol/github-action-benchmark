@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkout = exports.clone = exports.fetch = exports.pull = exports.push = exports.cmd = exports.getServerName = exports.getServerUrl = void 0;
+exports.checkout = exports.clone = exports.fetch = exports.pull = exports.push = exports.readCommitMessage = exports.readCommitEmail = exports.readCommitTimestamp = exports.readCommitId = exports.cmd = exports.getServerName = exports.getServerUrl = void 0;
 const exec_1 = require("@actions/exec");
 const core = __importStar(require("@actions/core"));
 const github = __importStar(require("@actions/github"));
@@ -87,6 +87,42 @@ function getCurrentRepoRemoteUrl(token) {
     const serverName = getServerName((_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.html_url);
     return getRepoRemoteUrl(token, `${serverName}/${owner}/${repo}`);
 }
+async function readCommitId(...options) {
+    core.debug(`Executing 'git rev-parse HEAD' with options '${options.join(' ')}'`);
+    let args = ['rev-parse', 'HEAD'];
+    if (options.length > 0) {
+        args = args.concat(options);
+    }
+    return cmd(options, ...args);
+}
+exports.readCommitId = readCommitId;
+async function readCommitTimestamp(...options) {
+    core.debug(`Executing 'git show -s --format=%ci HEAD' with options '${options.join(' ')}'`);
+    let args = ['show', '-s', '--format=%ci', 'HEAD'];
+    if (options.length > 0) {
+        args = args.concat(options);
+    }
+    return cmd(options, ...args);
+}
+exports.readCommitTimestamp = readCommitTimestamp;
+async function readCommitEmail(...options) {
+    core.debug(`Executing 'git show -s --format='%ae' HEAD' with options '${options.join(' ')}'`);
+    let args = ['show', '-s', '--format=%ae', 'HEAD'];
+    if (options.length > 0) {
+        args = args.concat(options);
+    }
+    return cmd(options, ...args);
+}
+exports.readCommitEmail = readCommitEmail;
+async function readCommitMessage(...options) {
+    core.debug(`Executing 'git show -s --format='%s' HEAD' with options '${options.join(' ')}'`);
+    let args = ['show', '-s', '--format=%s', 'HEAD'];
+    if (options.length > 0) {
+        args = args.concat(options);
+    }
+    return cmd(options, ...args);
+}
+exports.readCommitMessage = readCommitMessage;
 function getRepoRemoteUrl(token, repoUrl) {
     return `https://x-access-token:${token}@${repoUrl}.git`;
 }
