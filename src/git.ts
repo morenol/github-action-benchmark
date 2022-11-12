@@ -117,7 +117,6 @@ export async function readCommitMessage(...options: string[]): Promise<string> {
     return cmd(options, ...args);
 }
 
-
 function getRepoRemoteUrl(token: string, repoUrl: string): string {
     return `https://x-access-token:${token}@${repoUrl}.git`;
 }

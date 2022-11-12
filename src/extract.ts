@@ -287,7 +287,6 @@ async function getCommitFromGitHubAPIRequest(githubToken: string): Promise<Commi
 }
 
 async function getCommit(config: Config): Promise<Commit> {
-
     const { githubToken, readCommitIdFromGit } = config;
 
     if (readCommitIdFromGit) {
@@ -307,10 +306,9 @@ async function getCommit(config: Config): Promise<Commit> {
             timestamp,
             message,
             author: user,
-            committer: user
+            committer: user,
         };
     }
-
 
     if (github.context.payload.head_commit) {
         return github.context.payload.head_commit;
@@ -509,7 +507,8 @@ function extractCatch2Result(output: string): BenchmarkResult[] {
         const mean = meanLine?.match(reBenchmarkValues);
         if (!mean) {
             throw new Error(
-                `Mean values cannot be retrieved for benchmark '${name}' on parsing input '${meanLine ?? 'EOF'
+                `Mean values cannot be retrieved for benchmark '${name}' on parsing input '${
+                    meanLine ?? 'EOF'
                 }' at line ${meanLineNum}`,
             );
         }
@@ -521,7 +520,8 @@ function extractCatch2Result(output: string): BenchmarkResult[] {
         const stdDev = stdDevLine?.match(reBenchmarkValues);
         if (!stdDev) {
             throw new Error(
-                `Std-dev values cannot be retrieved for benchmark '${name}' on parsing '${stdDevLine ?? 'EOF'
+                `Std-dev values cannot be retrieved for benchmark '${name}' on parsing '${
+                    stdDevLine ?? 'EOF'
                 }' at line ${stdDevLineNum}`,
             );
         }
@@ -551,7 +551,7 @@ function extractCatch2Result(output: string): BenchmarkResult[] {
         }
 
         // Eat until a separator line appears
-        for (; ;) {
+        for (;;) {
             const [line, num] = nextLine();
             if (line === null) {
                 throw new Error(`Separator '------' does not appear after benchmark suite at line ${num}`);
@@ -562,7 +562,7 @@ function extractCatch2Result(output: string): BenchmarkResult[] {
         }
 
         let benchFound = false;
-        for (; ;) {
+        for (;;) {
             const res = extractBench();
             if (res === null) {
                 break;
