@@ -286,11 +286,9 @@ async function getCommitFromGitHubAPIRequest(githubToken: string): Promise<Commi
     };
 }
 
-
-
 async function getCommit(config: Config): Promise<Commit> {
 
-    let { githubToken, readCommitIdFromGit } = config;
+    const { githubToken, readCommitIdFromGit } = config;
 
     if (readCommitIdFromGit) {
         const id = (await git.readCommitId()).trim();
